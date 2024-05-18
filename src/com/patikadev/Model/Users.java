@@ -114,6 +114,16 @@ public class Users {
             throw new RuntimeException(e.getMessage());
         }
     }
+    public static boolean delete(int user_id){
+        String query = "DELETE FROM users WHERE user_id = ?";
+        try {
+            PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
+            pr.setInt(1,user_id);
+           return pr.executeUpdate() != -1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static Users getFetch(String user_uname){
         Users obj = null;

@@ -27,6 +27,8 @@ public class OperatorGUI extends JFrame {
     private JTextField fld_password;
     private JComboBox cmb_user_type;
     private JButton btn_user_add;
+    private JTextField fld_user_id;
+    private JButton btn_user_delete;
     private final Operator operator;
     private DefaultTableModel mdl_user_list;
     private Object[] row_user_list;
@@ -47,7 +49,14 @@ public class OperatorGUI extends JFrame {
 
         // ModelUserList
 
-        mdl_user_list = new DefaultTableModel();
+        mdl_user_list = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                if (column == 0)
+                    return false;
+                return super.isCellEditable(row, column);
+            }
+        };
         Object[] col_user_list = {"ID","Ad Soyad","Kullanıcı Adı","Şifre","Üyelik Tipi"};
         mdl_user_list.setColumnIdentifiers(col_user_list);
         row_user_list = new Object[col_user_list.length];
@@ -56,6 +65,15 @@ public class OperatorGUI extends JFrame {
 
         tbl_user_list.setModel(mdl_user_list);
         tbl_user_list.getTableHeader().setReorderingAllowed(false);
+
+        tbl_user_list.getSelectionModel().addListSelectionListener(e -> {
+            try {
+                String select_user_id = tbl_user_list.getValueAt(tbl_user_list.getSelectedRow(), 0).toString();
+                fld_user_id.setText(select_user_id);
+            }catch (Exception exception){
+                System.out.println(exception.getMessage());
+            }
+        });
 
         btn_user_add.addActionListener(e -> {
            if (Helper.isFieldEmpty(fld_user_name) || Helper.isFieldEmpty(fld_user_uname) || Helper.isFieldEmpty(fld_password)){
@@ -69,8 +87,24 @@ public class OperatorGUI extends JFrame {
                if (Users.add(name,uname,password,type)){
                    Helper.showMessage("done");
                    loadUserModel();
+                   fld_user_name.setText(null);
+                   fld_user_uname.setText(null);
+                   fld_password.setText(null);
                }
            }
+        });
+        btn_user_delete.addActionListener(e -> {
+            if (Helper.isFieldEmpty(fld_user_id)){
+                Helper.showMessage("fill");
+            }else {
+                int user_id = Integer.parseInt(fld_user_id.getText());
+                if (Users.delete(user_id)){
+                    Helper.showMessage("done");
+                    loadUserModel();
+                }else{
+                    Helper.showMessage("error");
+                }
+            }
         });
     }
 
