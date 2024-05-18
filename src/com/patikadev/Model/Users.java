@@ -1,7 +1,9 @@
 package com.patikadev.Model;
 
 import com.patikadev.Helper.DBConnector;
+import com.patikadev.Helper.Helper;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -69,6 +71,7 @@ public class Users {
     public static ArrayList<Users> getList(){
         ArrayList<Users> userList = new ArrayList<>();
         String query = "SELECT * FROM users";
+
         Users obj;
         try {
             Statement st = DBConnector.getInstance().createStatement();
@@ -86,6 +89,52 @@ public class Users {
             throw new RuntimeException(e);
         }
         return userList;
+    }
+
+    public static boolean add(String user_name,String user_uname,String user_password, String user_type){
+        String query = "INSERT INTO users(user_name, user_uname, user_password, user_type) VALUES (?,?,?,?)";
+
+        Users findUser = getFetch(user_uname);
+        if (findUser != null){
+            Helper.showMessage("Bu kullanıcı adı daha öncek eklenmiş. Lütfen farklı kullanıcı adıyla kayıt olunuz !");
+            return false;
+        }
+        try {
+            PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
+            pr.setString(1,user_name);
+            pr.setString(2,user_uname);
+            pr.setString(3,user_password);
+            pr.setString(4,user_type);
+            int response = pr.executeUpdate();
+            if (response == -1){
+                Helper.showMessage("error");
+            }
+            return response != -1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public static Users getFetch(String user_uname){
+        Users obj = null;
+        String sql = "SELECT * FROM users WHERE user_uname = ?";
+        PreparedStatement pr = null;
+        try {
+            pr = DBConnector.getInstance().prepareStatement(sql);
+            pr.setString(1,user_uname);
+            ResultSet rs = pr.executeQuery();
+            if (rs.next()){
+                obj = new Users();
+                obj.setUser_id(rs.getInt("user_id"));
+                obj.setUser_name(rs.getString("user_name"));
+                obj.setUser_uname(rs.getString("user_uname"));
+                obj.setUser_password(rs.getString("user_password"));
+                obj.setUser_type(rs.getString("user_type"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        return obj;
     }
 
 

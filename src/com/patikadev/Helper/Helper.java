@@ -34,4 +34,36 @@ public class Helper {
         }
     }
 
+    public static boolean isFieldEmpty(JTextField textField){
+        return textField.getText().trim().isEmpty();
+    }
+    public static void showMessage(String message){
+        optionPageTR();
+        String msg;
+        String title;
+        switch (message){
+            case "fill":
+                msg = "Lütfen bütün alanları doldurun !";
+                title = "Hata !";
+                break;
+            case "done":
+                msg = "İşlem başarıyla gerçekleşti !";
+                title = "Başarılı işlem !";
+                break;
+            case "error":
+                msg = "İşlem gerçekleştirilemedi !";
+                title = "Hata !";
+                break;
+            default:
+                msg = message;
+                title = "Hata!";
+                break;
+        }
+        JOptionPane.showMessageDialog(null,msg,title,JOptionPane.INFORMATION_MESSAGE);
+
+    }
+    public static void optionPageTR(){
+        UIManager.put("OptionPane.okButtonText","Tamam");
+    }
+
 }
