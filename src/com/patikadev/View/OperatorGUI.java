@@ -4,13 +4,17 @@ import com.patikadev.Helper.Config;
 import com.patikadev.Helper.DBConnector;
 import com.patikadev.Helper.Helper;
 import com.patikadev.Model.Operator;
+import com.patikadev.Model.Patika;
 import com.patikadev.Model.Users;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class OperatorGUI extends JFrame {
@@ -35,9 +39,19 @@ public class OperatorGUI extends JFrame {
     private JTextField fld_sh_user_uname;
     private JComboBox cmb_sh_user_type;
     private JButton btn_user_sh;
+    private JPanel pnl_patika_list;
+    private JScrollPane scrl_patika_list;
+    private JTable tbl_patika_list;
+    private JPanel pnl_patika_add;
+    private JTextField fld_patika_name;
+    private JButton btn_patika_add;
     private final Operator operator;
     private DefaultTableModel mdl_user_list;
     private Object[] row_user_list;
+    private DefaultTableModel mdl_patika_list;
+    private Object[] row_patika_list;
+    private JPopupMenu patikaMenu;
+
 
     OperatorGUI(Operator operator){
         this.operator = operator;
@@ -96,6 +110,38 @@ public class OperatorGUI extends JFrame {
                 loadUserModel();
             }
         });
+        // PatikaList
+
+        patikaMenu = new JPopupMenu();
+        JMenuItem updateMenu = new JMenuItem("Güncelle");
+        JMenuItem deleteMenu = new JMenuItem("Sil");
+        patikaMenu.add(updateMenu);
+        patikaMenu.add(deleteMenu);
+
+        mdl_patika_list = new DefaultTableModel();
+        Object[] col_patika_list = {"ID","Patika adı"};
+        mdl_patika_list.setColumnIdentifiers(col_patika_list);
+        row_patika_list = new Object[col_patika_list.length];
+
+
+        loadPatikaModel();
+
+        tbl_patika_list.setModel(mdl_patika_list);
+        tbl_patika_list.setComponentPopupMenu(patikaMenu);
+        tbl_patika_list.getTableHeader().setReorderingAllowed(false);
+        tbl_patika_list.getColumnModel().getColumn(0).setMaxWidth(100);
+
+        tbl_patika_list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                Point point = e.getPoint();
+                int selectedRow = tbl_patika_list.rowAtPoint(point);
+                tbl_patika_list.setRowSelectionInterval(selectedRow,selectedRow);
+            }
+        });
+
+        //## PatikaList
+
 
         btn_user_add.addActionListener(e -> {
            if (Helper.isFieldEmpty(fld_user_name) || Helper.isFieldEmpty(fld_user_uname) || Helper.isFieldEmpty(fld_password)){
@@ -136,6 +182,32 @@ public class OperatorGUI extends JFrame {
             String query = Users.searchQuery(name,uname,type);
             loadUserModel(Users.searchUserList(query));
         });
+        btn_patika_add.addActionListener(e -> {
+            if (Helper.isFieldEmpty(fld_patika_name)){
+                Helper.showMessage("fill");
+            }else {
+
+                if (Patika.addPatika(fld_patika_name.getText())){
+                    Helper.showMessage("done");
+                    fld_patika_name.setText(null);
+                    loadPatikaModel();
+                }else {
+                    Helper.showMessage("error");
+                }
+            }
+        });
+    }
+
+    private void loadPatikaModel() {
+        DefaultTableModel clearModel = (DefaultTableModel) tbl_patika_list.getModel();
+        clearModel.setRowCount(0);
+        int i = 0;
+        for (Patika obj : Patika.getList()){
+            i = 0;
+            row_patika_list[i++] = obj.getId();
+            row_patika_list[i++] = obj.getName();
+            mdl_patika_list.addRow(row_patika_list);
+        }
     }
 
     public void loadUserModel(){
