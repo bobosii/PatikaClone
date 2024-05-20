@@ -147,5 +147,77 @@ public class Users {
         return obj;
     }
 
+    public static boolean update(int id,String name, String uname, String pass, String type){
+        String query = "UPDATE users SET user_name=?, user_uname = ?, user_password=?,user_type = ? WHERE user_id = ?";
+        Users findUser = getFetch(uname);
+        if (findUser != null && findUser.getUser_id() != id){
+            Helper.showMessage("Bu kullanıcı adı daha öncek eklenmiş. Lütfen farklı kullanıcı adıyla kayıt olunuz !");
+            return false;
+        }
+        try {
+            PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
+            pr.setString(1,name);
+            pr.setString(2,uname);
+            pr.setString(3,pass);
+            pr.setString(4,type);
+            pr.setInt(5,id);
+            return pr.executeUpdate() != -1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public static ArrayList<Users> searchUserList(String query){
+        ArrayList<Users> userList = new ArrayList<>();
+        Users obj;
+        try {
+            Statement st = DBConnector.getInstance().createStatement();
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()){
+                obj = new Users();
+                obj.setUser_id(rs.getInt("user_id"));
+                obj.setUser_name(rs.getString("user_name"));
+                obj.setUser_uname(rs.getString("user_uname"));
+                obj.setUser_password(rs.getString("user_password"));
+                obj.setUser_type(rs.getString("user_type"));
+                userList.add(obj);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return userList;
+    }
+
+    public static String searchQuery(String name, String uname, String type){
+        String query = "SELECT * FROM users where user_uname LIKE '%{{user_uname}}%' AND user_name LIKE '%{{user_name}}%' AND user_type LIKE '%{{user_type}}%'";
+        query = query.replace("{{user_uname}}",uname);
+        query =query.replace("{{user_name}}",name);
+        query = query.replace("{{user_type}}",type);
+        return query;
+    }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
