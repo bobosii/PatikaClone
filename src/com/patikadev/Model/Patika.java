@@ -62,4 +62,44 @@ public class Patika {
         }
     }
 
+    public static boolean update(int id,String name){
+        String query = "UPDATE patika SET patika_name = ? WHERE patika_id = ?";
+        try {
+            PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
+            pr.setInt(2,id);
+            pr.setString(1,name);
+            return pr.executeUpdate() != -1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public static Patika getFetch(int id){
+        Patika obj = null;
+        String sql = "SELECT * FROM patika WHERE patika_id = ?";
+
+        try {
+            PreparedStatement pr = DBConnector.getInstance().prepareStatement(sql);
+            pr.setInt(1,id);
+            ResultSet rs = pr.executeQuery();
+            if (rs.next()){
+                obj = new Patika(rs.getInt("patika_id"),rs.getString("patika_name"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return obj;
+    }
+
+    public static boolean delete(int id){
+        String query = "DELETE FROM patika WHERE patika_id = ?";
+        try {
+            PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
+            pr.setInt(1,id);
+            return pr.executeUpdate() != -1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

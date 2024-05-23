@@ -11,10 +11,7 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 public class OperatorGUI extends JFrame {
@@ -118,6 +115,29 @@ public class OperatorGUI extends JFrame {
         patikaMenu.add(updateMenu);
         patikaMenu.add(deleteMenu);
 
+        updateMenu.addActionListener(e -> {
+            int select_id = Integer.parseInt(tbl_patika_list.getValueAt(tbl_patika_list.getSelectedRow(),0).toString());
+            UpdatePatikaGUI updateGUI = new UpdatePatikaGUI(Patika.getFetch(select_id));
+            updateGUI.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    loadPatikaModel();
+                }
+            });
+        });
+
+        deleteMenu.addActionListener(e -> {
+            if (Helper.confirm("sure")){
+                int select_id = Integer.parseInt(tbl_patika_list.getValueAt(tbl_patika_list.getSelectedRow(),0).toString());
+                if (Patika.delete(select_id)){
+                    Helper.showMessage("done");
+                    loadPatikaModel();
+                }else {
+                    Helper.showMessage("error");
+                }
+            }
+        });
+
         mdl_patika_list = new DefaultTableModel();
         Object[] col_patika_list = {"ID","Patika adı"};
         mdl_patika_list.setColumnIdentifiers(col_patika_list);
@@ -139,6 +159,7 @@ public class OperatorGUI extends JFrame {
                 tbl_patika_list.setRowSelectionInterval(selectedRow,selectedRow);
             }
         });
+
 
         //## PatikaList
 
@@ -165,13 +186,15 @@ public class OperatorGUI extends JFrame {
             if (Helper.isFieldEmpty(fld_user_id)){
                 Helper.showMessage("fill");
             }else {
-                int user_id = Integer.parseInt(fld_user_id.getText());
-                if (Users.delete(user_id)){
-                    Helper.showMessage("done");
-                    loadUserModel();
-                    fld_user_id.setText(null);
-                }else{
-                    Helper.showMessage("error");
+                if (Helper.confirm("sure")){
+                    int user_id = Integer.parseInt(fld_user_id.getText());
+                    if (Users.delete(user_id)){
+                        Helper.showMessage("done");
+                        loadUserModel();
+                        fld_user_id.setText(null);
+                    }else{
+                        Helper.showMessage("error");
+                    }
                 }
             }
         });
