@@ -1,5 +1,12 @@
 package com.patikadev.Model;
 
+import com.patikadev.Helper.DBConnector;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
 public class Course {
     private int id;
     private int user_id;
@@ -74,5 +81,29 @@ public class Course {
 
     public void setEducator(Users educator) {
         this.educator = educator;
+    }
+
+
+    public static ArrayList<Course> getList(){
+        ArrayList<Course> courseList = new ArrayList<>();
+        Course obj;
+
+        try {
+            Statement st = DBConnector.getInstance().createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM course");
+            while (rs.next()){
+                int id = rs.getInt("course_id");
+                int user_id = rs.getInt("user_id");
+                int patika_id = rs.getInt("patika_id");
+                String course_name = rs.getString("course_name");
+                String lang = rs.getString("lang");
+                obj = new Course(id,user_id,patika_id,course_name,lang);
+                courseList.add(obj);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return courseList;
+
     }
 }
