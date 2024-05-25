@@ -147,6 +147,28 @@ public class Users {
         return obj;
     }
 
+    public static Users getFetch(int id){
+        Users obj = null;
+        String sql = "SELECT * FROM users WHERE user_id = ?";
+        PreparedStatement pr = null;
+        try {
+            pr = DBConnector.getInstance().prepareStatement(sql);
+            pr.setInt(1,id);
+            ResultSet rs = pr.executeQuery();
+            if (rs.next()){
+                obj = new Users();
+                obj.setUser_id(rs.getInt("user_id"));
+                obj.setUser_name(rs.getString("user_name"));
+                obj.setUser_uname(rs.getString("user_uname"));
+                obj.setUser_password(rs.getString("user_password"));
+                obj.setUser_type(rs.getString("user_type"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        return obj;
+    }
+
     public static boolean update(int id,String name, String uname, String pass, String type){
         String query = "UPDATE users SET user_name=?, user_uname = ?, user_password=?,user_type = ? WHERE user_id = ?";
         Users findUser = getFetch(uname);
