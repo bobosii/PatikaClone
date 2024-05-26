@@ -275,6 +275,13 @@ public class OperatorGUI extends JFrame {
                 }
             }
         });
+        btn_logout.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                LoginGUI loginGUI = new LoginGUI();
+            }
+        });
     }
 
     private void loadCourseList() {
