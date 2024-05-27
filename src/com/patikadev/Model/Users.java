@@ -2,7 +2,6 @@ package com.patikadev.Model;
 
 import com.patikadev.Helper.DBConnector;
 import com.patikadev.Helper.Helper;
-import com.patikadev.View.EducatorGUI;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -164,6 +163,12 @@ public class Users {
                 switch (rs.getString("user_type")){
                     case "operator":
                         obj = new Operator();
+                        break;
+                    case "educator":
+                        obj = new Educator();
+                        break;
+                    case "student":
+                        obj = new Student();
                         break;
                     default:
                         obj = new Users();

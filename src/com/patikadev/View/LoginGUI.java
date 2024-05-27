@@ -2,6 +2,7 @@ package com.patikadev.View;
 
 import com.patikadev.Helper.Config;
 import com.patikadev.Helper.Helper;
+import com.patikadev.Model.Educator;
 import com.patikadev.Model.Operator;
 import com.patikadev.Model.Users;
 
@@ -38,7 +39,7 @@ public class LoginGUI extends JFrame{
                             OperatorGUI opGUI = new OperatorGUI((Operator) u);
                             break;
                         case "educator":
-                            EducatorGUI educatorGUI = new EducatorGUI();
+                            EducatorGUI educatorGUI = new EducatorGUI((Educator) u);
                             break;
                         case "student":
                             StudentGUI studentGUI = new StudentGUI();
