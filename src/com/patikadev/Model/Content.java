@@ -133,4 +133,15 @@ public class Content {
             throw new RuntimeException(e);
         }
     }
+
+    public static boolean delete(int content_id){
+        String query = "DELETE FROM contents WHERE content_id = ?";
+        try {
+            PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
+            pr.setInt(1,content_id);
+            return pr.executeUpdate() != -1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

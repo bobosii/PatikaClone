@@ -6,12 +6,11 @@ import com.patikadev.Helper.Item;
 import com.patikadev.Model.Content;
 import com.patikadev.Model.Course;
 import com.patikadev.Model.Educator;
-import com.patikadev.Model.Patika;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
 
 public class EducatorGUI extends JFrame {
     private Educator educator;
@@ -31,6 +30,8 @@ public class EducatorGUI extends JFrame {
     private JComboBox cmb_select_course;
     private JTextField fld_content_link;
     private JButton btn_add;
+    private JTextField fld_content_id;
+    private JButton btn_delete_content;
     private DefaultTableModel mdl_course_list;
     private Object[] row_course_list;
     private DefaultTableModel mdl_content_list;
@@ -40,7 +41,7 @@ public class EducatorGUI extends JFrame {
         Helper.setLayout();
         this.educator = educator;
         add(wrapper);
-        setSize(600,600);
+        setSize(800,800);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocation(Helper.screenCenterPoint("x",getSize()),Helper.screenCenterPoint("y",getSize()));
         setTitle(Config.PROJECT_TITLE);
@@ -102,13 +103,45 @@ public class EducatorGUI extends JFrame {
                 }
             }
         });
+        tbl_content_list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                Point point = e.getPoint();
+                int selectedRow = tbl_content_list.rowAtPoint(point);
+                tbl_content_list.setRowSelectionInterval(selectedRow,selectedRow);
+            }
+        });
+        tbl_content_list.getSelectionModel().addListSelectionListener(e -> {
+            try {
+                String select_user_id = tbl_content_list.getValueAt(tbl_content_list.getSelectedRow(), 0).toString();
+                fld_content_id.setText(select_user_id);
+            }catch (Exception exception){
+                System.out.println(exception.getMessage());
+            }
+
+        });
+        btn_delete_content.addActionListener(e -> {
+            if (Helper.isFieldEmpty(fld_content_id)){
+                Helper.showMessage("fill");
+            }else {
+                int selectedRow = Integer.parseInt(fld_content_id.getText());
+                if (Content.delete(selectedRow)){
+                    Helper.showMessage("done");
+                    loadContentModel();
+                    fld_content_id.setText(null);
+                }else {
+                    Helper.showMessage("error");
+                }
+
+            }
+        });
     }
     private void loadCourseModel(){
         DefaultTableModel clearModel = (DefaultTableModel) tbl_course_list.getModel();
         clearModel.setRowCount(0);
-
+        int i = 0;
         for (Course obj: Course.getList()){
-            int i = 0;
+            i = 0;
             if (educator.getUser_name().equals(obj.getEducator().getUser_name())){
                 row_course_list[i++] = obj.getId();
                 row_course_list[i++] = obj.getPatika().getName();
@@ -121,9 +154,9 @@ public class EducatorGUI extends JFrame {
     private void loadContentModel(){
         DefaultTableModel clearModel = (DefaultTableModel) tbl_content_list.getModel();
         clearModel.setRowCount(0);
-
+        int i = 0;
         for (Content obj: Content.getContentList()){
-            int i = 0;
+            i = 0;
             row_content_list[i++] = obj.getContent_id();
             row_content_list[i++] = obj.getTitle();
             row_content_list[i++] = obj.getDescription();
