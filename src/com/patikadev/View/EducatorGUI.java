@@ -2,9 +2,11 @@ package com.patikadev.View;
 
 import com.patikadev.Helper.Config;
 import com.patikadev.Helper.Helper;
+import com.patikadev.Helper.Item;
 import com.patikadev.Model.Content;
 import com.patikadev.Model.Course;
 import com.patikadev.Model.Educator;
+import com.patikadev.Model.Patika;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -43,6 +45,8 @@ public class EducatorGUI extends JFrame {
         setResizable(true);
         setVisible(true);
 
+        lbl_welcome.setText("Hoş geldiniz : " + educator.getUser_name());
+
         //Course List
         mdl_course_list = new DefaultTableModel();
         Object[] col_patika_list = {"ID","Patika","Ders Adı","Eğitmen"};
@@ -50,7 +54,7 @@ public class EducatorGUI extends JFrame {
         row_course_list = new Object[col_patika_list.length];
 
         tbl_course_list.setModel(mdl_course_list);
-        loadPatikaModel();
+        loadCourseModel();
         tbl_course_list.getColumn("ID").setMaxWidth(70);
 
         //## Course List
@@ -65,6 +69,7 @@ public class EducatorGUI extends JFrame {
         tbl_content_list.setModel(mdl_content_list);
         tbl_content_list.getColumn("ID").setMaxWidth(70);
         loadContentModel();
+        loadCourseCombo();
 
 
         //##Content List
@@ -74,7 +79,7 @@ public class EducatorGUI extends JFrame {
             LoginGUI loginGUI = new LoginGUI();
         });
     }
-    private void loadPatikaModel(){
+    private void loadCourseModel(){
         DefaultTableModel clearModel = (DefaultTableModel) tbl_course_list.getModel();
         clearModel.setRowCount(0);
 
@@ -101,6 +106,12 @@ public class EducatorGUI extends JFrame {
             row_content_list[i++] = obj.getCourse().getCourse_name();
             row_content_list[i++] = obj.getContent_link();
             mdl_content_list.addRow(row_content_list);
+        }
+    }
+    public void loadCourseCombo(){
+        cmb_select_course.removeAllItems();
+        for (Course obj: Course.getListByUser(educator.getUser_id())){
+            cmb_select_course.addItem(new Item(obj.getId(), obj.getCourse_name()));
         }
     }
 }
