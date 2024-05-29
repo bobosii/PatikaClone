@@ -18,6 +18,7 @@ public class Content {
     private String content_link;
     private String title;
     private Users educator;
+    private Course course;
 
     public Content(int content_id, int course_id, int user_id, String description, String content_link, String title) {
         this.content_id = content_id;
@@ -26,7 +27,16 @@ public class Content {
         this.description = description;
         this.content_link = content_link;
         this.title = title;
+        this.course = Course.getFetch(course_id);
         this.educator = Users.getFetch(user_id);
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
     public int getContent_id() {
@@ -107,5 +117,9 @@ public class Content {
             throw new RuntimeException(e);
         }
         return contents;
+    }
+
+    public static boolean add(int content_id, int course_id, int user_id, String description, String content_link, String title){
+        return true;
     }
 }

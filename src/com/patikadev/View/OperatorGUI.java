@@ -288,7 +288,7 @@ public class OperatorGUI extends JFrame {
         DefaultTableModel clearModel = (DefaultTableModel) tbl_course_list.getModel();
         clearModel.setRowCount(0);
         int i = 0;
-        for (Course obj: Course.getList()){
+        for (Course obj : Course.getList()) {
             i = 0;
             row_course_list[i++] = obj.getId();
             row_course_list[i++] = obj.getCourse_name();
@@ -298,6 +298,7 @@ public class OperatorGUI extends JFrame {
             mdl_course_list.addRow(row_course_list);
         }
     }
+
 
     private void loadPatikaModel() {
         DefaultTableModel clearModel = (DefaultTableModel) tbl_patika_list.getModel();

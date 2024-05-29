@@ -22,6 +22,11 @@ public class EducatorGUI extends JFrame {
     private JPanel pnl_contents;
     private JTable tbl_content_list;
     private JScrollPane scrl_contents;
+    private JTextField fld_content_title;
+    private JTextField fld_content_descrb;
+    private JComboBox cmb_select_course;
+    private JTextField fld_content_link;
+    private JButton btn_add;
     private DefaultTableModel mdl_course_list;
     private Object[] row_course_list;
     private DefaultTableModel mdl_content_list;
@@ -35,7 +40,7 @@ public class EducatorGUI extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocation(Helper.screenCenterPoint("x",getSize()),Helper.screenCenterPoint("y",getSize()));
         setTitle(Config.PROJECT_TITLE);
-        setResizable(false);
+        setResizable(true);
         setVisible(true);
 
         //Course List
@@ -93,7 +98,7 @@ public class EducatorGUI extends JFrame {
             row_content_list[i++] = obj.getContent_id();
             row_content_list[i++] = obj.getTitle();
             row_content_list[i++] = obj.getDescription();
-            row_content_list[i++] = Course.getFetch(obj.getCourse_id()).getCourse_name();
+            row_content_list[i++] = obj.getCourse().getCourse_name();
             row_content_list[i++] = obj.getContent_link();
             mdl_content_list.addRow(row_content_list);
         }

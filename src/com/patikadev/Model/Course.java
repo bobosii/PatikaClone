@@ -14,7 +14,6 @@ public class Course {
     private int patika_id;
     private String course_name;
     private String lang;
-
     private Patika patika;
     private Users educator;
 
@@ -129,7 +128,6 @@ public class Course {
     public static ArrayList<Course> getListByUser(int user_id){
         ArrayList<Course> courseList = new ArrayList<>();
         Course obj;
-
         try {
             Statement st = DBConnector.getInstance().createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM course WHERE user_id = " + user_id);
@@ -150,10 +148,10 @@ public class Course {
 
     public static boolean delete(int user_id){
         String query = "DELETE FROM course WHERE user_id = ?";
-        ArrayList<Course> courseList = Course.getListByUser(user_id);
-        for (Course obj: courseList){
-            if (obj.getPatika().getId() == user_id){
-                Course.delete(obj.getUser_id());
+        ArrayList<Patika> patikaList = Patika.getList();
+        for (Patika obj: patikaList){
+            if (obj.getId() == user_id){
+                Course.delete(user_id);
             }
         }
         try {
@@ -181,5 +179,15 @@ public class Course {
             throw new RuntimeException(e.getMessage());
         }
         return obj;
+    }
+    public static boolean deleteCourse(int course_id){
+        String query = "DELETE FROM course WHERE course_id = ?";
+        try {
+            PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
+            pr.setInt(1,course_id);
+            return pr.executeUpdate() != -1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

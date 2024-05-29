@@ -93,10 +93,13 @@ public class Patika {
 
     public static boolean delete(int id){
         String query = "DELETE FROM patika WHERE patika_id = ?";
+        String query2 = "DELETE FROM course where patika_id = ?";
         try {
             PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
+            PreparedStatement pr2 = DBConnector.getInstance().prepareStatement(query2);
+            pr2.setInt(1,id);
             pr.setInt(1,id);
-            return pr.executeUpdate() != -1;
+            return pr.executeUpdate() != -1 && pr2.executeUpdate() != -1;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
