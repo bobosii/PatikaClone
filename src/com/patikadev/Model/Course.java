@@ -27,6 +27,9 @@ public class Course {
         this.patika = Patika.getFetch(patika_id);
         this.educator = Users.getFetch(user_id);
     }
+    public Course(){
+
+    }
 
     public int getId() {
         return id;
@@ -160,5 +163,23 @@ public class Course {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+    public static Course getFetch(int id){
+        Course obj = null;
+        String sql = "SELECT * FROM course WHERE course_id = ?";
+        PreparedStatement pr = null;
+        try {
+            pr = DBConnector.getInstance().prepareStatement(sql);
+            pr.setInt(1,id);
+            ResultSet rs = pr.executeQuery();
+            if (rs.next()){
+                obj = new Course();
+                obj.setCourse_name(rs.getString("course_name"));
+                obj.setId(rs.getInt("course_id"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        return obj;
     }
 }
