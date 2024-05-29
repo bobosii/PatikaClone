@@ -10,6 +10,8 @@ import com.patikadev.Model.Patika;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class EducatorGUI extends JFrame {
     private Educator educator;
@@ -77,6 +79,28 @@ public class EducatorGUI extends JFrame {
         btn_logout.addActionListener(e -> {
             dispose();
             LoginGUI loginGUI = new LoginGUI();
+        });
+        // Content Ekle.
+        btn_add.addActionListener(e -> {
+            Item courseCmb = (Item) cmb_select_course.getSelectedItem();
+            String title = fld_content_title.getText();
+            String describe = fld_content_descrb.getText();
+            String link = fld_content_link.getText();
+            int user_id = this.educator.getUser_id();
+            if (Helper.isFieldEmpty(fld_content_title) && Helper.isFieldEmpty(fld_content_descrb) && Helper.isFieldEmpty(fld_content_link)){
+                Helper.showMessage("fill");
+            }else {
+                if (Content.add(courseCmb.getKey(),user_id,describe,link,title)){
+                    Helper.showMessage("done");
+                    loadContentModel();
+                    fld_content_descrb.setText(null);
+                    fld_content_link.setText(null);
+                    fld_content_title.setText(null);
+                    loadContentModel();
+                }else {
+                    Helper.showMessage("error");
+                }
+            }
         });
     }
     private void loadCourseModel(){

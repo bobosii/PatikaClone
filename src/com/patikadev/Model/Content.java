@@ -119,7 +119,18 @@ public class Content {
         return contents;
     }
 
-    public static boolean add(int content_id, int course_id, int user_id, String description, String content_link, String title){
-        return true;
+    public static boolean add(int course_id, int user_id, String description, String content_link, String title){
+        String query = "INSERT INTO contents(title,description,content_link,user_id,course_id) VALUES(?,?,?,?,?)";
+        try {
+            PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
+            pr.setString(1,title);
+            pr.setString(2,description);
+            pr.setString(3,content_link);
+            pr.setInt(4,user_id);
+            pr.setInt(5,course_id);
+            return pr.executeUpdate() != -1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
