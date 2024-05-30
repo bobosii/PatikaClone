@@ -190,4 +190,9 @@ public class Course {
             throw new RuntimeException(e);
         }
     }
+    public static String searchCourse(String course_name){
+        String query = "SELECT * FROM users where title ILIKE '%{{course_name}}%'";
+        query = query.replace("{{course_name}}",course_name);
+        return query;
+    }
 }

@@ -30,6 +30,9 @@ public class Content {
         this.course = Course.getFetch(course_id);
         this.educator = Users.getFetch(user_id);
     }
+    public Content(){
+
+    }
 
     public Course getCourse() {
         return course;
@@ -143,5 +146,48 @@ public class Content {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+    public static Content getFetchById(int content_id){
+        Content obj = null;
+        String query = "SELECT * FROM contents where content_id = ?";
+
+        try {
+            PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
+            pr.setInt(1,content_id);
+            ResultSet rs = pr.executeQuery();
+            if (rs.next()){
+                obj = new Content();
+                obj.setTitle(rs.getString("title"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return obj;
+    }
+    public static ArrayList<Content> getListByUser(int user_id){
+        ArrayList<Content> contentList = new ArrayList<>();
+        Content obj;
+        try {
+            Statement st = DBConnector.getInstance().createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM contents WHERE user_id = " + user_id);
+            while (rs.next()){
+                int id = rs.getInt("content_id");
+                int course_id = rs.getInt("course_id");
+                int userId = rs.getInt("user_id");
+                String description = rs.getString("description");
+                String content_link = rs.getString("content_link");
+                String title = rs.getString("title");
+                obj = new Content(id,course_id,userId,description,content_link,title);
+                contentList.add(obj);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return contentList;
+    }
+    public static String searchContent(String title){
+        String query = "SELECT * FROM users where title LIKE '%{{title}}%' AND description LIKE '%{{description}}%'";
+        query = query.replace("{{title}}",title);
+        return query;
     }
 }

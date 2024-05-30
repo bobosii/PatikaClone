@@ -176,6 +176,7 @@ public class OperatorGUI extends JFrame {
                 Point point = e.getPoint();
                 int selectedRow = tbl_patika_list.rowAtPoint(point);
                 tbl_patika_list.setRowSelectionInterval(selectedRow,selectedRow);
+
             }
         });
 
