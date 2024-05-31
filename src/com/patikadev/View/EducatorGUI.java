@@ -12,6 +12,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class EducatorGUI extends JFrame {
     private Educator educator;
@@ -205,17 +206,19 @@ public class EducatorGUI extends JFrame {
                 }
             }
         });
+
+        // Content Paneli Filtreleme işlemi
+
         btn_search.addActionListener(e -> {
-            if (Helper.isFieldEmpty(fld_search_content_title) || Helper.isFieldEmpty(fld_search_course)){
-                Helper.showMessage("fill");
-            }else {
-                String course_name = fld_search_course.getText();
-                String content_title = fld_search_content_title.getText();
-                Course.searchCourse(course_name);
-                Content.searchContent(content_title);
+            String query = Content.searchContent(fld_search_content_title.getText());
+            try {
+                loadContentModel(Content.searchContentList(query));
+            }catch (Exception exception){
+                System.out.println(exception.getMessage());
             }
         });
     }
+
     private void loadCourseModel(){
         DefaultTableModel clearModel = (DefaultTableModel) tbl_course_list.getModel();
         clearModel.setRowCount(0);
@@ -241,6 +244,21 @@ public class EducatorGUI extends JFrame {
             row_quiz_list[i++] = Content.getFetchById(obj.getContent_id()).getTitle();
             row_quiz_list[i++] = obj.getQuestion();
             mdl_quiz_list.addRow(row_quiz_list);
+        }
+    }
+    private void loadContentModel(ArrayList<Content> contentlist){
+        DefaultTableModel clearModel = (DefaultTableModel) tbl_content_list.getModel();
+        clearModel.setRowCount(0);
+        int i;
+        for (Content obj: contentlist){
+            i = 0;
+            row_content_list[i++] = obj.getContent_id();
+            row_content_list[i++] = obj.getTitle();
+            row_content_list[i++] = obj.getDescription();
+            row_content_list[i++] = Course.getFetch(obj.getCourse_id()).getCourse_name();
+            row_content_list[i++] = obj.getContent_link();
+            System.out.println(obj.getContent_link());
+            mdl_content_list.addRow(row_content_list);
         }
     }
     private void loadContentModel(){

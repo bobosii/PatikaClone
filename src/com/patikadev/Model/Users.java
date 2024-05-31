@@ -251,7 +251,7 @@ public class Users {
     public static String searchQuery(String name, String uname, String type){
         String query = "SELECT * FROM users where user_uname LIKE '%{{user_uname}}%' AND user_name LIKE '%{{user_name}}%' AND user_type LIKE '%{{user_type}}%'";
         query = query.replace("{{user_uname}}",uname);
-        query =query.replace("{{user_name}}",name);
+        query = query.replace("{{user_name}}",name);
         query = query.replace("{{user_type}}",type);
         return query;
     }

@@ -124,7 +124,6 @@ public class Course {
         }
     }
 
-
     public static ArrayList<Course> getListByUser(int user_id){
         ArrayList<Course> courseList = new ArrayList<>();
         Course obj;
@@ -145,7 +144,6 @@ public class Course {
         }
         return courseList;
     }
-
     public static boolean delete(int user_id){
         String query = "DELETE FROM course WHERE user_id = ?";
         ArrayList<Patika> patikaList = Patika.getList();
@@ -189,10 +187,5 @@ public class Course {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-    public static String searchCourse(String course_name){
-        String query = "SELECT * FROM users where title ILIKE '%{{course_name}}%'";
-        query = query.replace("{{course_name}}",course_name);
-        return query;
     }
 }

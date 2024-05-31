@@ -75,7 +75,7 @@ public class Content {
     }
 
     public String getContent_link() {
-        return content_link;
+        return this.content_link;
     }
 
     public void setContent_link(String content_link) {
@@ -186,8 +186,30 @@ public class Content {
         return contentList;
     }
     public static String searchContent(String title){
-        String query = "SELECT * FROM users where title LIKE '%{{title}}%' AND description LIKE '%{{description}}%'";
+        String query = "SELECT * FROM contents WHERE title LIKE '%{{title}}%'";
         query = query.replace("{{title}}",title);
         return query;
+    }
+    public static ArrayList<Content> searchContentList(String query){
+        ArrayList<Content> contentList = new ArrayList<>();
+        Content obj;
+
+        try {
+            Statement st = DBConnector.getInstance().createStatement();
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()){
+                obj = new Content();
+                obj.setContent_id(rs.getInt("content_id"));
+                obj.setTitle(rs.getString("title"));
+                obj.setContent_link(rs.getString("content_link"));
+                obj.setDescription(rs.getString("description"));
+                obj.setCourse_id(rs.getInt("course_id"));
+                obj.setUser_id(rs.getInt("user_id"));
+                contentList.add(obj);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return contentList;
     }
 }
